@@ -37,7 +37,7 @@ Tarea pedir_datos_tarea(int *ultimoID);
 void cargar_tarea(Nodo **listasPendientes, int *ultimoID);
 
 void mostrar_tarea(Tarea t);
-void mostrar_lista(Nodo *lista);
+void mostrar_lista(Nodo *lista, char* titulo);
 
 int main(){
     Nodo *listasPendientes = NULL;
@@ -58,27 +58,52 @@ int main(){
         switch (valor)
         {
         case 0:
-            int opcion;
+            int opcion1;
             do
             {
                 cargar_tarea(&listasPendientes, &ultimoID);
                 printf("Desea agregar una nueva tarea pendiente?(0:Si, 1:NO)");
-                scanf("%d",&opcion);      
-            } while (opcion!=1);
-            break;    
+                scanf("%d",&opcion1);      
+            } while (opcion1!=1);
+        break;    
         case 1:
-                int opcion;
-                pritf("Desea ver las tareas pendientes?[0]");
-                pritf("Desea ver las tareas Realizadas?[1]");
-                pritf("Desea ver ambas listas?[2]");
-                scanf("%d",&opcion);
-            break;
-        case 2:
             /* code */
-            break;
+        break;
+        case 2:
+            int opcion2;
+            do
+            {
+                printf("Desea ver las tareas pendientes?[0]\n");
+                printf("Desea ver las tareas Realizadas?[1]\n");
+                printf("Desea ver ambas listas?[2]\n");
+                printf("Volver al menu[3]\n");
+                scanf("%d",&opcion2);
+                
+                switch (opcion2)
+                {
+                    case 0:
+                        mostrar_lista(listasPendientes,"Pendientes");
+                    break;
+                    case 1:
+                        mostrar_lista(listasRealizadas,"Realizadas");
+                    break;
+                    case 2:
+                        printf("---Listas de tareas pendientes y realizadas---");
+                        mostrar_lista(listasPendientes,"Pendientes");
+                        mostrar_lista(listasRealizadas,"Realizadas");
+                    break;
+                    default:
+
+                    break;
+                }
+            } while (opcion2 !=3);
+        break;
         case 3:
     
-            break;
+        break;
+        case 4:
+    
+        break;
         default:
             break;
         };
@@ -108,6 +133,7 @@ Tarea pedir_datos_tarea(int *ultimoID){
 
     //Asignar ID
     nuevaTarea.TareaID = (*ultimoID)++;
+    return nuevaTarea;
 }
 
 void cargar_tarea(Nodo **listasPendientes, int *ultimoID){
@@ -123,13 +149,14 @@ void mostrar_tarea(Tarea t){
     printf("------------------------------------\n");
 }
 
-void mostrar_lista(Nodo *lista){
+void mostrar_lista(Nodo *lista, char* titulo){
     if(lista == NULL){
-        printf("La lista esta vacia\n");
+        printf("La lista %s esta vacia\n", titulo);
         return;
     }
 
     Nodo *actual = lista;
+    printf("La lista que muestra corresponde a %s\n",titulo);
     while (actual != NULL)
     {
         mostrar_tarea(actual->T);
