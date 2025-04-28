@@ -39,6 +39,8 @@ void cargar_tarea(Nodo **listasPendientes, int *ultimoID);
 void mostrar_tarea(Tarea t);
 void mostrar_lista(Nodo *lista, char* titulo);
 
+
+void transferir_tarea(Nodo **pendiente, Nodo **realizado);
 int main(){
     Nodo *listasPendientes = NULL;
     Nodo *listasRealizadas = NULL;
@@ -67,7 +69,13 @@ int main(){
             } while (opcion1!=1);
         break;    
         case 1:
-            /* code */
+                if(listasPendientes == NULL){
+                    printf("No hay tareas pendientes para transferir.\n");
+                    break;
+                }
+                mostrar_lista(listasPendientes,"Pendientes");
+
+                transferir_tarea(&listasPendientes, &listasRealizadas);
         break;
         case 2:
             int opcion2;
@@ -162,4 +170,37 @@ void mostrar_lista(Nodo *lista, char* titulo){
         mostrar_tarea(actual->T);
         actual = actual->Siguiente;
     }
+}
+
+int pedir_id_transferencia(){
+    int id;
+    printf("Ingrese el ID de la tarea que desea transferir a realizadas: ");
+    scanf("%d",&id);
+    return id;
+}
+
+void transferir_tarea(Nodo **pendiente, Nodo **realizado){
+    int idBuscado = pedir_id_transferencia();
+
+    Nodo *actual = *pendiente;
+    Nodo *anterior = NULL;
+
+    while (actual !=NULL && actual->T.TareaID != idBuscado)
+    {
+        anterior = actual;
+        actual = actual->Siguiente;
+    }
+    if(actual == NULL){
+        printf("Tarea con ID %d no encontrada en la lista de pendientes.\n", idBuscado);
+        return;
+    }
+
+    if(anterior == NULL){
+        *pendiente = actual->Siguiente;
+    }
+
+    actual->Siguiente = *realizado;
+    *realizado = actual;
+
+    printf("Tarea transferida correctamente.\n");
 }
