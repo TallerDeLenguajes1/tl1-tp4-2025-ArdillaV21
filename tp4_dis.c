@@ -39,8 +39,12 @@ void cargar_tarea(Nodo **listasPendientes, int *ultimoID);
 void mostrar_tarea(Tarea t);
 void mostrar_lista(Nodo *lista, char* titulo);
 
-
+int pedir_id_transferencia();
 void transferir_tarea(Nodo **pendiente, Nodo **realizado);
+
+Nodo *buscar_tarea_por_palabra(Nodo *lista, char *palabra);
+Nodo* buscar_tarea_por_id(Nodo *lista, int id);
+
 int main(){
     Nodo *listasPendientes = NULL;
     Nodo *listasRealizadas = NULL;
@@ -107,7 +111,54 @@ int main(){
             } while (opcion2 !=3);
         break;
         case 3:
-    
+            int opcionBusqueda;
+            printf("Como desea buscar?\n");
+            printf("[0] Buscar por ID\n");
+            printf("[1] Buscar por palabra clave\n");
+            scanf("%d",&opcionBusqueda);
+
+            if(opcionBusqueda == 0){
+                int id;
+                printf("Ingrese el ID a buscar: ");
+                scanf("%d",&id);
+
+                Nodo *encontrado = buscar_tarea_por_id(listasPendientes, id);
+                if( encontrado != NULL){
+                    printf("Tarea encontrada en listas PENDIENTES:\n");
+                    mostrar_tarea(encontrado->T);
+                }else{
+                    encontrado = buscar_tarea_por_id(listasRealizadas, id);
+                    if( encontrado != NULL){
+                        printf("Tarea encontrada en listas REALIZADAS:\n");
+                        mostrar_tarea(encontrado->T);
+                }else{
+                    printf("No se encontro ninguna tarea con ese ID.\n");
+                }
+            }
+        }
+        else if(opcionBusqueda == 1){
+            char palabra[100];
+            printf("Ingrese la palabra clave a buscar: ");
+            getchar();
+            fgets(palabra,sizeof(palabra),stdin);
+            palabra[strcspn(palabra, "\n")] = 0;
+
+            Nodo *encontrado = buscar_tarea_por_palabra(listasPendientes, palabra);
+            if(encontrado != NULL){
+                printf("Tarea encontrada en listas pendientes:\n");
+                mostrar_tarea(encontrado->T);
+            }else{
+                encontrado = buscar_tarea_por_palabra(listasRealizadas,palabra);
+                if(encontrado != NULL){
+                    printf("Tarea encontrada en la lista de Realizadas:\n");
+                    mostrar_tarea(encontrado->T);
+                }else{
+                    printf("No se encontro ninguna tarea que contenga esa palabra: \n");
+                }
+            }
+        }else{
+            printf("Opcion invalida.\n");
+        }
         break;
         case 4:
     
@@ -203,4 +254,31 @@ void transferir_tarea(Nodo **pendiente, Nodo **realizado){
     *realizado = actual;
 
     printf("Tarea transferida correctamente.\n");
+}
+
+Nodo* buscar_tarea_por_id(Nodo *lista, int id){
+    Nodo *actual = lista;
+    while (actual != NULL)
+    {
+        if(actual->T.TareaID == id){
+            return actual;
+        }
+        actual= actual->Siguiente;
+    }
+    return NULL;
+    
+}
+
+Nodo *buscar_tarea_por_palabra(Nodo *lista, char *palabra){
+    Nodo *actual = lista;
+
+    while (actual != NULL)
+    {
+        if(strstr(actual->T.Descripcion,palabra) != NULL){
+            return actual;
+        }
+        actual = actual->Siguiente;
+    }
+    return NULL;
+    
 }
