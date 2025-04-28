@@ -45,6 +45,8 @@ void transferir_tarea(Nodo **pendiente, Nodo **realizado);
 Nodo *buscar_tarea_por_palabra(Nodo *lista, char *palabra);
 Nodo* buscar_tarea_por_id(Nodo *lista, int id);
 
+void liberar_lista(Nodo *lista);
+
 int main(){
     Nodo *listasPendientes = NULL;
     Nodo *listasRealizadas = NULL;
@@ -100,7 +102,7 @@ int main(){
                         mostrar_lista(listasRealizadas,"Realizadas");
                     break;
                     case 2:
-                        printf("---Listas de tareas pendientes y realizadas---");
+                        printf("---Listas de tareas pendientes y realizadas---\n");
                         mostrar_lista(listasPendientes,"Pendientes");
                         mostrar_lista(listasRealizadas,"Realizadas");
                     break;
@@ -161,7 +163,10 @@ int main(){
         }
         break;
         case 4:
-    
+            printf("Liberando memoria...\n");
+            liberar_lista(listasPendientes);
+            liberar_lista(listasRealizadas);
+            printf("Memoria liberada correctamente. Fin del programa.\n");
         break;
         default:
             break;
@@ -281,4 +286,17 @@ Nodo *buscar_tarea_por_palabra(Nodo *lista, char *palabra){
     }
     return NULL;
     
+}
+
+void liberar_lista(Nodo *lista){
+    Nodo *aux;
+    while(lista != NULL){
+        aux = lista;
+        lista = lista->Siguiente;
+
+        if(aux-> T.Descripcion !=NULL){
+            free(aux->T.Descripcion);
+        }
+        free(aux);
+    }
 }
